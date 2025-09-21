@@ -11,14 +11,20 @@ interface DirectoryProps {
 export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('');
-  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
+  const [selectedFloor, setSelectedFloor] = useState('');
+  const [viewMode, setViewMode] = useState<'card' | 'list'>('list');
+  // const [sortOrder, setSortOrder] = useState<'default' | 'floor-asc' | 'floor-desc'>('default');
 
   const departments = useMemo(() => {
     return Array.from(new Set(employees.map(emp => emp.department))).sort();
   }, [employees]);
 
+  const floors = useMemo(() => {
+    return Array.from(new Set(employees.map(emp => emp.floor))).sort();
+  }, [employees]);
+
   const filteredEmployees = useMemo(() => {
-    return employees.filter(employee => {
+    const filtered = employees.filter(employee => {
       const matchesSearch = searchTerm === '' || 
         `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,14 +34,24 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
 
       const matchesDepartment = selectedDepartment === '' || employee.department === selectedDepartment;
 
-      return matchesSearch && matchesDepartment;
+      const matchesFloor = selectedFloor === '' || employee.floor === selectedFloor;
+
+      return matchesSearch && matchesDepartment && matchesFloor;
     });
-  }, [employees, searchTerm, selectedDepartment]);
+
+    // if (sortOrder === 'floor-asc') {
+    //   return filtered.sort((a, b) => parseInt(a.floor) - parseInt(b.floor));
+    // } else if (sortOrder === 'floor-desc') {
+    //   return filtered.sort((a, b) => parseInt(b.floor) - parseInt(a.floor));
+    // }
+
+    return filtered;
+  }, [employees, searchTerm, selectedDepartment, selectedFloor]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">BUA Group Employee Directory</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Head Office Phone Directory</h2>
         <p className="text-gray-600 dark:text-gray-400">Find and connect with your colleagues</p>
       </div>
 
@@ -46,8 +62,13 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
           selectedDepartment={selectedDepartment}
           onDepartmentChange={setSelectedDepartment}
           departments={departments}
+          selectedFloor={selectedFloor}
+          onFloorChange={setSelectedFloor}
+          floors={floors}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
+          // sortOrder={sortOrder}
+          // onSortOrderChange={setSortOrder}
         />
       </div>
 

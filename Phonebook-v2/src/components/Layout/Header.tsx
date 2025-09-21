@@ -26,8 +26,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => 
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
-              <img src="/bua-logo.jpg" alt="BUA Group" className="w-12 h-12 rounded-lg shadow-md" />
-              <h1 className="text-xl font-bold text-white dark:text-gray-100">BUA Employee Directory</h1>
+              <img src="/bua-logo.jpg" alt="BUA Group" className="w-12 h-12  shadow-md" />
+              <h1 className="text-xl font-bold text-white dark:text-gray-100">BUA GROUP</h1>
             </div>
             
             <nav className="flex space-x-4">

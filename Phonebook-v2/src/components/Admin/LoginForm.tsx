@@ -51,7 +51,7 @@ export default function LoginForm() {
                 BUAGroup
               </h1>
               <p className="text-xs text-muted-foreground">
-                IT Asset Management
+                PhoneBook System
               </p>
             </div>
           </div>
