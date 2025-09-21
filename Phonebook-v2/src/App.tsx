@@ -1,17 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import type { Employee, EmployeeFormData } from './types/Employee';
-import { mockEmployees } from '@/data/mockData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getEmployees, addEmployee, updateEmployee, deleteEmployee } from './lib/firebase';
 import { Header } from './components/Layout/Header';
 import { Directory } from './components/Directory/Directory';
-import { Admin } from './components/Admin/Admin';
+import { AdminRoute } from './components/Admin/AdminRoute';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
-import LoginPage from './pages/loginPage';
 
 function App() {
   const [currentView, setCurrentView] = useState<'directory' | 'admin'>('directory');
-  const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
-  const { isAuthenticated, loading } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: employees = [], isLoading: isFetching } = useQuery<Employee[]>({
+    queryKey: ['employees'],
+    queryFn: getEmployees,
+    enabled: true, // Always fetch employees
+  });
+
+  const addEmployeeMutation = useMutation({
+    mutationFn: addEmployee,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+    },
+  });
+
+  const updateEmployeeMutation = useMutation({
+    mutationFn: (variables: { id: string; employeeData: EmployeeFormData }) => 
+      updateEmployee(variables.id, variables.employeeData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+    },
+  });
+
+  const deleteEmployeeMutation = useMutation({
+    mutationFn: deleteEmployee,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+    },
+  });
 
   // Handle URL routing
   useEffect(() => {
@@ -39,26 +65,16 @@ function App() {
     };
   }, []);
 
-  const generateId = () => {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  };
-
   const handleAddEmployee = (employeeData: EmployeeFormData) => {
-    const newEmployee: Employee = {
-      ...employeeData,
-      id: generateId(),
-    };
-    setEmployees(prev => [...prev, newEmployee]);
+    addEmployeeMutation.mutate(employeeData);
   };
 
   const handleUpdateEmployee = (id: string, employeeData: EmployeeFormData) => {
-    setEmployees(prev =>
-      prev.map(emp => (emp.id === id ? { ...employeeData, id } : emp))
-    );
+    updateEmployeeMutation.mutate({ id, employeeData });
   };
 
   const handleDeleteEmployee = (id: string) => {
-    setEmployees(prev => prev.filter(emp => emp.id !== id));
+    deleteEmployeeMutation.mutate(id);
   };
 
   const handleViewChange = (view: 'directory' | 'admin') => {
@@ -71,39 +87,29 @@ function App() {
     }
   };
 
-  // Show loading spinner while checking authentication
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-bua-red"></div>
-      </div>
-    );
-  }
-
-  // Show login page if trying to access admin without authentication
-  if (currentView === 'admin' && !isAuthenticated) {
-    return (
-      <ThemeProvider>
-        <LoginPage />
-      </ThemeProvider>
-    );
-  }
-
   // Show main app
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <Header currentView={currentView} onViewChange={handleViewChange} />
         
-        {currentView === 'directory' ? (
-          <Directory employees={employees} />
+        {isFetching ? (
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-bua-red"></div>
+          </div>
         ) : (
-          <Admin
-            employees={employees}
-            onAddEmployee={handleAddEmployee}
-            onUpdateEmployee={handleUpdateEmployee}
-            onDeleteEmployee={handleDeleteEmployee}
-          />
+          <>
+            {currentView === 'directory' ? (
+              <Directory employees={employees} />
+            ) : (
+              <AdminRoute
+                employees={employees}
+                onAddEmployee={handleAddEmployee}
+                onUpdateEmployee={handleUpdateEmployee}
+                onDeleteEmployee={handleDeleteEmployee}
+              />
+            )}
+          </>
         )}
       </div>
     </ThemeProvider>
