@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settings, Search, Moon, Sun, LogOut } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hook/useAuth';
 
 interface HeaderProps {
   currentView: 'directory' | 'admin';

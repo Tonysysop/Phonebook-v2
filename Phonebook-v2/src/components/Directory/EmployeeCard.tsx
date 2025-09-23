@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Employee } from '@/types/Employee';
-import { Mail, Phone, MapPin, User, Building } from 'lucide-react';
+import { Mail, Phone, MapPin,  Building } from 'lucide-react';
 
 interface EmployeeCardProps {
   employee: Employee;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import type { Employee, EmployeeFormData } from './types/Employee';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getEmployees, addEmployee, updateEmployee, deleteEmployee } from './lib/firebase';

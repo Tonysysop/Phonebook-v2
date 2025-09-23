@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hook/useAuth';
 import LoginPage from '@/pages/loginPage';
 import { Admin } from './Admin';
 import type { Employee, EmployeeFormData } from '@/types/Employee';

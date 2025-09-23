@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, Grid, List, ArrowUpDown } from 'lucide-react';
+import { Search, Filter, Grid, List } from 'lucide-react';
 
 interface SearchBarProps {
   searchTerm: string;
