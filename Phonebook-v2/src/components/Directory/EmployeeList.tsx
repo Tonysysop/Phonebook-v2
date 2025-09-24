@@ -7,8 +7,13 @@ interface EmployeeListProps {
 }
 
 export const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  const getInitials = (fullName: string) => {
+    if (!fullName) return "?"; // fallback
+    const parts = fullName.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
   };
 
   return (
@@ -50,12 +55,12 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                           className="w-10 h-10 rounded-lg object-cover"
                         />
                       ) : (
-                        getInitials(employee.firstName, employee.lastName)
+                        getInitials(employee.name)
                       )}
                     </div>
                     <div>
                       <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        {employee.firstName} {employee.lastName}
+                        {employee.name}
                       </div>
                       <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
                         {employee.role}
