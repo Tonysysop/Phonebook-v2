@@ -38,7 +38,7 @@ export const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Are you sure you want to delete</p>
               <p className="font-medium text-gray-900 dark:text-gray-100">
-                {employee.firstName} {employee.lastName}?
+                {employee.name}?
               </p>
             </div>
           </div>

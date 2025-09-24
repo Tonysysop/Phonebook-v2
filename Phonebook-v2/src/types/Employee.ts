@@ -1,7 +1,6 @@
 export interface Employee {
     id: string;
-    firstName: string;
-    lastName: string;
+    name: string
     email: string;
     extension: string;
     department: string;
@@ -10,4 +9,4 @@ export interface Employee {
     avatar?: string;
   }
   
-  export interface EmployeeFormData extends Omit<Employee, 'id'> {}
+ export type EmployeeFormData = Omit<Employee, "id">;

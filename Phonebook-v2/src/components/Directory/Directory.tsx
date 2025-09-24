@@ -26,7 +26,7 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
   const filteredEmployees = useMemo(() => {
     const filtered = employees.filter(employee => {
       const matchesSearch = searchTerm === '' || 
-        `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        `${employee.name} `.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
