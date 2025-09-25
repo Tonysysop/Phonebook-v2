@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import type { Employee, EmployeeFormData } from '@/types/Employee';
 import { AdminTable } from './AdminTable';
 import { EmployeeForm } from './EmployeeForm';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { Plus, Users } from 'lucide-react';
+import { SearchBar } from './AdminSearchBar';
 
 interface AdminProps {
   employees: Employee[];
@@ -22,6 +23,9 @@ export const Admin: React.FC<AdminProps> = ({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | undefined>();
   const [deletingEmployee, setDeletingEmployee] = useState<Employee | undefined>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedFloor, setSelectedFloor] = useState("");
 
   const handleAddEmployee = () => {
     setEditingEmployee(undefined);
@@ -66,13 +70,54 @@ export const Admin: React.FC<AdminProps> = ({
     setEditingEmployee(undefined);
   };
 
+  const departments = useMemo(() => {
+    return Array.from(new Set(employees.map((emp) => emp.department))).sort();
+  }, [employees]);
+
+  const floors = useMemo(() => {
+    return Array.from(new Set(employees.map((emp) => emp.floor))).sort();
+  }, [employees]);
+
+  const filteredEmployees = useMemo(() => {
+    const filtered = employees.filter((employee) => {
+      const matchesSearch =
+        searchTerm === "" ||
+        `${employee.name} `.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.floor.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesDepartment =
+        selectedDepartment === "" || employee.department === selectedDepartment;
+
+      const matchesFloor =
+        selectedFloor === "" || employee.floor === selectedFloor;
+
+      return matchesSearch && matchesDepartment && matchesFloor;
+    });
+
+    // if (sortOrder === 'floor-asc') {
+    //   return filtered.sort((a, b) => parseInt(a.floor) - parseInt(b.floor));
+    // } else if (sortOrder === 'floor-desc') {
+    //   return filtered.sort((a, b) => parseInt(b.floor) - parseInt(a.floor));
+    // }
+
+    return filtered;
+  }, [employees, searchTerm, selectedDepartment, selectedFloor]);
+
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Dashboard</h2>
-            <p className="text-gray-600 dark:text-gray-400">Manage employee records and information</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              Admin Dashboard
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Manage employee records and information
+            </p>
           </div>
           <button
             onClick={handleAddEmployee}
@@ -83,6 +128,26 @@ export const Admin: React.FC<AdminProps> = ({
           </button>
         </div>
       </div>
+      <div className="mb-8">
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          selectedDepartment={selectedDepartment}
+          onDepartmentChange={setSelectedDepartment}
+          departments={departments}
+          selectedFloor={selectedFloor}
+          onFloorChange={setSelectedFloor}
+          floors={floors}
+          // sortOrder={sortOrder}
+          // onSortOrderChange={setSortOrder}
+        />
+      </div>
+
+      <div className="mb-6">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Showing {filteredEmployees.length} of {employees.length} employees
+        </p>
+      </div>
 
       <div className="bg-gradient-to-r from-white to-gray-50/50 dark:from-gray-800 dark:to-gray-700/50 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8 transition-colors duration-200">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -91,8 +156,12 @@ export const Admin: React.FC<AdminProps> = ({
               <Users className="w-6 h-6 text-bua-red" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Employees</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{employees.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Total Employees
+              </p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {employees.length}
+              </p>
             </div>
           </div>
 
@@ -101,9 +170,11 @@ export const Admin: React.FC<AdminProps> = ({
               <div className="w-4 h-4 bg-bua-gold rounded-full shadow-md"></div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Departments</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Total Departments
+              </p>
               <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {new Set(employees.map(emp => emp.department)).size}
+                {new Set(employees.map((emp) => emp.department)).size}
               </p>
             </div>
           </div>
@@ -112,14 +183,21 @@ export const Admin: React.FC<AdminProps> = ({
             <div className="w-14 h-14 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center shadow-inner">
               <div className="w-6 h-6 text-gray-600 dark:text-gray-400">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"
+                  />
                 </svg>
               </div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Floors</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Total Floors
+              </p>
               <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {new Set(employees.map(emp => emp.floor)).size}
+                {new Set(employees.map((emp) => emp.floor)).size}
               </p>
             </div>
           </div>
@@ -127,7 +205,7 @@ export const Admin: React.FC<AdminProps> = ({
       </div>
 
       <AdminTable
-        employees={employees}
+        employees={filteredEmployees}
         onEdit={handleEditEmployee}
         onDelete={handleDeleteEmployee}
       />
@@ -145,6 +223,32 @@ export const Admin: React.FC<AdminProps> = ({
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
       />
+
+      {filteredEmployees.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-gray-400 dark:text-gray-500 mb-4">
+            <svg
+              className="mx-auto h-12 w-12"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 48 48"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M34 34l8-8m0 0l-8-8m8 8H14m28-4v8a2 2 0 01-2 2H8a2 2 0 01-2-2V14a2 2 0 012-2h32a2 2 0 012 2v4"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            No employees found
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Try adjusting your search or filter criteria.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
