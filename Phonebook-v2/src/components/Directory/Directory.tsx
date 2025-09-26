@@ -77,8 +77,12 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
       return matchesSearch && matchesDepartment && matchesFloor;
     });
 
-    // Note: Add sorting logic here if needed
-    return filtered;
+    // Sort by extension number in ascending order
+    return filtered.sort((a, b) => {
+      const extensionA = parseInt(a.extension) || 0;
+      const extensionB = parseInt(b.extension) || 0;
+      return extensionA - extensionB;
+    });
   }, [employees, searchTerm, selectedDepartment, selectedFloor]);
 
   // 2. Pagination Calculation for the Current View
