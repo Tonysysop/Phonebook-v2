@@ -28,38 +28,3 @@ jobs:
           mv dist phonebook-build
           sudo mv phonebook-build /var/www/html/
           sudo systemctl restart nginx
-
-
-
-
-
-# name: Deploy to Server
-
-# on:
-#   push:
-#     branches: [ "main" ]
-
-# jobs:
-#   build-deploy:
-#     runs-on: self-hosted
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-
-#       - name: Install dependencies
-#         run: |
-#           cd Phonebook-v2
-#           npm install 
-
-#       - name: Build project
-#         run: |
-#           cd Phonebook-v2
-#           npm run build
-
-#       - name: Deploy to nginx
-#         run: |
-#           sudo rm -rf /var/www/html/*
-#           sudo mv Phonebook-v2/dist phonebook-build
-#           sudo cp -r phonebook-build/* /var/www/html/
-#           sudo systemctl restart nginx
