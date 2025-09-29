@@ -14,12 +14,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd Phonebook-v2
+          cd Phonebook-app
           npm install --production
 
       - name: Build project
         run: |
-          cd Phonebook-v2
+          cd Phonebook-app
           npm run build
 
       - name: Deploy to nginx
