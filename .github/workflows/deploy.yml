@@ -20,9 +20,7 @@ jobs:
       - name: Build project
         run: |
           cd Phonebook-v2
-           npx tsc -b
-           npx vite build
-          
+          npm run build
 
       - name: Deploy to nginx
         run: |
