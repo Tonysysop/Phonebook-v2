@@ -22,11 +22,13 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to Nginx
+      - name: Deploy to nginx
         run: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/
-          sudo systemctl restart nginx
+           sudo rm -rf /var/www/html/*
+           sudo mv Phonebook-v2/dist phonebook-build
+           sudo cp -r phonebook-build/* /var/www/html/
+           sudo systemctl restart nginx
+
 
 
 
