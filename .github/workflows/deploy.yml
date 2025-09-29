@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd Phonebook-v2
-          npm install --production
+          npm install 
 
       - name: Build project
         run: |
