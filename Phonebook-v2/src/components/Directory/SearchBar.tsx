@@ -10,10 +10,14 @@ interface SearchBarProps {
   selectedFloor: string;
   onFloorChange: (floor: string) => void;
   floors: string[];
+  selectedSubsidiary: string;
+  onSubsidiaryChange: (subsidiary: string) => void;
+  subsidiaries: string[];
   viewMode: 'card' | 'list';
   onViewModeChange: (mode: 'card' | 'list') => void;
   // sortOrder: 'default' | 'floor-asc' | 'floor-desc';
   // onSortOrderChange: (order: 'default' | 'floor-asc' | 'floor-desc') => void;
+  // here here
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -25,6 +29,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   selectedFloor,
   onFloorChange,
   floors,
+  selectedSubsidiary,
+  onSubsidiaryChange,
+  subsidiaries,
   viewMode,
   onViewModeChange,
   // sortOrder,
@@ -37,7 +44,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search employees by name, email, role, department, floor..."
+            placeholder="Search employees by name, role, department, floor, extension, subsidiary, unit..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-bua-red focus:border-bua-red outline-none text-sm font-medium placeholder-gray-500 dark:placeholder-gray-400 bg-gray-50/50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all duration-200"
@@ -70,6 +77,21 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               {floors.map((floor) => (
                 <option key={floor} value={floor}>
                   {floor}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative">
+            <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+            <select
+              value={selectedSubsidiary}
+              onChange={(e) => onSubsidiaryChange(e.target.value)}
+              className="pl-12 pr-8 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-bua-red focus:border-bua-red outline-none text-sm font-medium bg-gray-50/50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-700 text-gray-900 dark:text-gray-100 min-w-[180px] transition-all duration-200"
+            >
+              <option value="">All Subsidiaries</option>
+              {subsidiaries.map((subsidiary) => (
+                <option key={subsidiary} value={subsidiary}>
+                  {subsidiary}
                 </option>
               ))}
             </select>
