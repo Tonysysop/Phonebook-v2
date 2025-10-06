@@ -17,6 +17,7 @@ interface SearchBarProps {
   onViewModeChange: (mode: 'card' | 'list') => void;
   // sortOrder: 'default' | 'floor-asc' | 'floor-desc';
   // onSortOrderChange: (order: 'default' | 'floor-asc' | 'floor-desc') => void;
+  // here
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
