@@ -1,20 +1,20 @@
-import React from 'react';
-import type { Employee } from '@/types/Employee';
-import { Mail, Phone, MapPin,  Building } from 'lucide-react';
+import React from "react";
+import type { Employee } from "@/types/Employee";
+import { Phone, MapPin, Building, Users, Briefcase } from "lucide-react";
 
 interface EmployeeCardProps {
   employee: Employee;
 }
 
 export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
- const getInitials = (fullName: string) => {
-   if (!fullName) return "?"; // fallback
-   const parts = fullName.trim().split(" ");
-   if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-   return (
-     parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
-   ).toUpperCase();
- };
+  const getInitials = (fullName: string) => {
+    if (!fullName) return "?"; // fallback
+    const parts = fullName.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-bua-red/20 dark:hover:border-bua-red/30 transition-all duration-200 group">
@@ -58,20 +58,24 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400 hover:text-bua-red dark:hover:text-bua-red transition-colors">
-              <Mail className="w-4 h-4" />
-              <a
-                href={`mailto:${employee.email}`}
-                className="hover:text-bua-red dark:hover:text-bua-red transition-colors font-medium"
-              >
-                {employee.email}
-              </a>
-            </div>
+            {employee.subsidiary && (
+              <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
+                <Building className="w-4 h-4" />
+                <span className="font-medium">{employee.subsidiary}</span>
+              </div>
+            )}
 
             <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
-              <Building className="w-4 h-4" />
+              <Users className="w-4 h-4" />
               <span className="font-medium">{employee.department}</span>
             </div>
+
+            {employee.unit && (
+              <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
+                <Briefcase className="w-4 h-4" />
+                <span className="font-medium">{employee.unit}</span>
+              </div>
+            )}
 
             <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
               <MapPin className="w-4 h-4" />

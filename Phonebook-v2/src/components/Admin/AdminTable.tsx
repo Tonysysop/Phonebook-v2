@@ -1,6 +1,14 @@
 import React, { useState, useMemo } from "react";
 import type { Employee } from "@/types/Employee";
-import { Edit, Trash2, Phone } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Phone,
+  Building,
+  Users,
+  Briefcase,
+  MapPin,
+} from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -117,10 +125,13 @@ export const AdminTable: React.FC<AdminTableProps> = ({
                 Extension
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Contact
+                Subsidiary
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Department
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Unit
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Floor
@@ -173,15 +184,36 @@ export const AdminTable: React.FC<AdminTableProps> = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {employee.email}
+                    <div className="flex items-center space-x-2">
+                      <Building className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {employee.subsidiary || "-"}
+                      </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {employee.department}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-2">
+                      <Users className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {employee.department}
+                      </span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {employee.floor}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-2">
+                      <Briefcase className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {employee.unit || "-"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-2">
+                      <MapPin className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {employee.floor}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
@@ -207,7 +239,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
               // Optional: Display a message if no data is available
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={7}
                   className="text-center py-10 text-gray-500 dark:text-gray-400"
                 >
                   No employees found.

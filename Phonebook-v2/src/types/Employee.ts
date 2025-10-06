@@ -6,6 +6,8 @@ export interface Employee {
     department: string;
     role: string;
     floor: string;
+    unit?: string;
+    subsidiary?: string;
     avatar?: string;
   }
   

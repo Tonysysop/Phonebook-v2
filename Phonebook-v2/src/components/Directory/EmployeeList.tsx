@@ -1,6 +1,6 @@
 import React from "react";
 import type { Employee } from "@/types/Employee";
-import { Mail, Phone, MapPin, Building } from "lucide-react";
+import { Phone, MapPin, Building, Users, Briefcase } from "lucide-react";
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -29,10 +29,13 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                 Extension
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Contact
+                Subsidiary
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Department
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Unit
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Floor
@@ -79,21 +82,26 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center space-x-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    <Mail className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <a
-                      href={`mailto:${employee.email}`}
-                      className="hover:text-bua-red dark:hover:text-bua-red transition-colors"
-                    >
-                      {employee.email}
-                    </a>
+                  <div className="flex items-center space-x-2">
+                    <Building className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {employee.subsidiary || "-"}
+                    </span>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center space-x-2">
-                    <Building className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <Users className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {employee.department}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center space-x-2">
+                    <Briefcase className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {employee.unit || "-"}
                     </span>
                   </div>
                 </td>

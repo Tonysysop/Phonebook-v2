@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import type { Employee, EmployeeFormData } from "@/types/Employee";
 import { X } from "lucide-react";
 
+const SUBSIDIARY_OPTIONS = [
+  "Bua Group",
+  "Bua Food",
+  "Bua Cement",
+  "Damas Petrochemical",
+  "Bua Refinery",
+  "ASR Africa Initiative",
+];
+
 interface EmployeeFormProps {
   employee?: Employee;
   onSave: (employee: EmployeeFormData) => void;
@@ -22,6 +31,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     department: "",
     role: "",
     floor: "",
+    unit: "",
+    subsidiary: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -35,6 +46,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
         department: employee.department,
         role: employee.role,
         floor: employee.floor,
+        unit: employee.unit || "",
+        subsidiary: employee.subsidiary || "",
       });
     } else {
       setFormData({
@@ -44,6 +57,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
         department: "",
         role: "",
         floor: "",
+        unit: "",
+        subsidiary: "",
       });
     }
     setErrors({});
@@ -116,6 +131,36 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label
+              htmlFor="subsidiary"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Subsidiary
+            </label>
+            <select
+              id="subsidiary"
+              name="subsidiary"
+              value={formData.subsidiary}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-bua-red focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200 ${
+                errors.subsidiary
+                  ? "border-red-300 dark:border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+              }`}
+            >
+              <option value="">Select a subsidiary</option>
+              {SUBSIDIARY_OPTIONS.map((subsidiary) => (
+                <option key={subsidiary} value={subsidiary}>
+                  {subsidiary}
+                </option>
+              ))}
+            </select>
+            {errors.subsidiary && (
+              <p className="text-red-600 text-xs mt-1">{errors.subsidiary}</p>
+            )}
+          </div>
+
           <div>
             <label
               htmlFor="name"
@@ -260,6 +305,30 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                 <p className="text-red-600 text-xs mt-1">{errors.role}</p>
               )}
             </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="unit"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Unit
+            </label>
+            <input
+              type="text"
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-bua-red focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200 ${
+                errors.unit
+                  ? "border-red-300 dark:border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+              }`}
+            />
+            {errors.unit && (
+              <p className="text-red-600 text-xs mt-1">{errors.unit}</p>
+            )}
           </div>
 
           <div className="flex space-x-3 pt-4">

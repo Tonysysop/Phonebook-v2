@@ -26,6 +26,7 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedFloor, setSelectedFloor] = useState("");
+  const [selectedSubsidiary, setSelectedSubsidiary] = useState("");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
 
   // 1. Pagination State
@@ -45,6 +46,10 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
     setSelectedFloor(floor);
     setCurrentPage(1);
   };
+  const handleSubsidiaryChange = (subsidiary: string) => {
+    setSelectedSubsidiary(subsidiary);
+    setCurrentPage(1);
+  };
   const handleViewModeChange = (mode: "card" | "list") => {
     setViewMode(mode);
     setCurrentPage(1);
@@ -59,22 +64,38 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
     return Array.from(new Set(employees.map((emp) => emp.floor))).sort();
   }, [employees]);
 
+  const subsidiaries = useMemo(() => {
+    return Array.from(
+      new Set(employees.map((emp) => emp.subsidiary).filter(Boolean))
+    ).sort();
+  }, [employees]);
+
   const allFilteredEmployees = useMemo(() => {
     const filtered = employees.filter((employee) => {
       const matchesSearch =
         searchTerm === "" ||
         `${employee.name} `.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.floor.toLowerCase().includes(searchTerm.toLowerCase());
+        employee.floor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.extension.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (employee.subsidiary &&
+          employee.subsidiary
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) ||
+        (employee.unit &&
+          employee.unit.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesDepartment =
         selectedDepartment === "" || employee.department === selectedDepartment;
       const matchesFloor =
         selectedFloor === "" || employee.floor === selectedFloor;
+      const matchesSubsidiary =
+        selectedSubsidiary === "" || employee.subsidiary === selectedSubsidiary;
 
-      return matchesSearch && matchesDepartment && matchesFloor;
+      return (
+        matchesSearch && matchesDepartment && matchesFloor && matchesSubsidiary
+      );
     });
 
     // Sort by extension number in ascending order
@@ -83,7 +104,13 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
       const extensionB = parseInt(b.extension) || 0;
       return extensionA - extensionB;
     });
-  }, [employees, searchTerm, selectedDepartment, selectedFloor]);
+  }, [
+    employees,
+    searchTerm,
+    selectedDepartment,
+    selectedFloor,
+    selectedSubsidiary,
+  ]);
 
   // 2. Pagination Calculation for the Current View
   const itemsPerPage =
@@ -155,6 +182,9 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
           selectedFloor={selectedFloor}
           onFloorChange={handleFloorChange}
           floors={floors}
+          selectedSubsidiary={selectedSubsidiary}
+          onSubsidiaryChange={handleSubsidiaryChange}
+          subsidiaries={subsidiaries}
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
           // sortOrder={sortOrder}
