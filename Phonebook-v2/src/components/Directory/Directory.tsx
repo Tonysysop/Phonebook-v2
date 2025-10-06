@@ -67,7 +67,7 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
   const subsidiaries = useMemo(() => {
     return Array.from(
       new Set(employees.map((emp) => emp.subsidiary).filter(Boolean))
-    ).sort();
+    ).sort() as string[];
   }, [employees]);
 
   const allFilteredEmployees = useMemo(() => {
