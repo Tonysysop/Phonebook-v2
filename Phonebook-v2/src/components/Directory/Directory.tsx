@@ -382,6 +382,6 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
 //           <p className="text-gray-600 dark:text-gray-400">Try adjusting your search or filter criteria.</p>
 //         </div>
 //       )}
-//     </div>
+//     </div>.....
 //   );
 // };
