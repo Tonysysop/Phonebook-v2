@@ -13,7 +13,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-// --- Configuration Constants ---
+// --- Configuration Constants -----
 const ITEMS_PER_PAGE_LIST = 10;
 const ITEMS_PER_PAGE_CARD = 12; // More items for grid view
 const MAX_VISIBLE_PAGES = 5;
