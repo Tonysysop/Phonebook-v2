@@ -3,11 +3,11 @@ import type { Employee, EmployeeFormData } from "@/types/Employee";
 import { X } from "lucide-react";
 
 const SUBSIDIARY_OPTIONS = [
-  "Bua Group",
-  "Bua Food",
-  "Bua Cement",
+  "BUA Group",
+  "BUA Foods",
+  "BUA Cement",
   "Damas Petrochemical",
-  "Bua Refinery",
+  "BUA Refinery",
   "ASR Africa Initiative",
 ];
 
