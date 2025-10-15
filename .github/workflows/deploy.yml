@@ -22,7 +22,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to nginx
+      - name: Deploy to nginxx
         run: |
           sudo rm -rf /var/www/html/phonebook-build
           mv dist phonebook-build
