@@ -14,20 +14,45 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-// Helper function to format floor label cleanly
-const formatFloorDisplay = (floor: string) => {
+// Helper function for ordinal suffixes (1st, 2nd, 3rd, 4th, 10th...)
+const getOrdinalSuffix = (n: number): string => {
+  const j = n % 10;
+  const k = n % 100;
+  if (j === 1 && k !== 11) {
+    return "st";
+  }
+  if (j === 2 && k !== 12) {
+    return "nd";
+  }
+  if (j === 3 && k !== 13) {
+    return "rd";
+  }
+  return "th";
+};
+
+// Helper function to format floor label cleanly (e.g., "10th Floor", "2nd Floor")
+const formatFloorDisplay = (floor: string): string => {
   if (!floor) return "";
   const trimmed = floor.trim();
-  if (/floor/i.test(trimmed)) {
+
+  // Special named floors
+  if (/^ground(\s+floor)?$/i.test(trimmed)) return "Ground Floor";
+  if (/^basement$/i.test(trimmed)) return "Basement";
+  if (/^mezzanine$/i.test(trimmed)) return "Mezzanine";
+
+  // Check if there is a number in the floor string, e.g. "10", "Floor 10", "10th", "2nd Floor"
+  const match = trimmed.match(/\b(\d+)(?:st|nd|rd|th)?\b/i);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    const ordinal = `${num}${getOrdinalSuffix(num)}`;
+    return `${ordinal} Floor`;
+  }
+
+  // If it already ends with "floor"
+  if (/floor$/i.test(trimmed)) {
     return trimmed;
   }
-  if (trimmed.toLowerCase() === "ground") {
-    return "Ground Floor";
-  }
-  if (trimmed.toLowerCase() === "basement") {
-    return "Basement";
-  }
-  return `Floor ${trimmed}`;
+  return `${trimmed} Floor`;
 };
 
 // --- Configuration Constants -----
@@ -213,34 +238,32 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
         />
       </div>
 
-      {/* Count Info & Centered Floor Heading */}
-      <div className="mb-6 relative flex flex-col sm:flex-row items-center justify-between gap-3 min-h-[36px]">
-        <p className="text-sm text-gray-600 dark:text-gray-400 order-2 sm:order-1 self-start sm:self-center">
+      {/* Floor Badge & Count Info */}
+      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-h-[44px]">
+        {selectedFloor ? (
+          <div className="inline-flex items-center gap-2.5 px-5 py-2 sm:px-6 sm:py-2.5 rounded-full bg-red-50 dark:bg-red-950/50 border-2 border-red-200 dark:border-red-900/70 shadow-sm transition-all duration-200">
+            <Building className="w-6 h-6 text-bua-red shrink-0" />
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 tracking-wide">
+              {formatFloorDisplay(selectedFloor)}
+            </h3>
+            <button
+              type="button"
+              onClick={() => handleFloorChange("")}
+              className="ml-1.5 p-1 text-gray-400 hover:text-bua-red dark:hover:text-red-400 rounded-full hover:bg-red-100 dark:hover:bg-red-900/60 transition-colors cursor-pointer"
+              title="Clear floor filter"
+              aria-label="Clear floor filter"
+            >
+              <X className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            </button>
+          </div>
+        ) : (
+          <div aria-hidden="true" />
+        )}
+
+        <p className="text-sm text-gray-600 dark:text-gray-400 self-end sm:self-center text-right">
           Showing {paginatedEmployees.length} of {allFilteredEmployees.length}{" "}
           employees (Page {currentPage} of {totalPages})
         </p>
-
-        {selectedFloor && (
-          <div className="order-1 sm:order-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex items-center justify-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 shadow-xs">
-              <Building className="w-5 h-5 text-bua-red shrink-0" />
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-wide">
-                {formatFloorDisplay(selectedFloor)}
-              </h3>
-              <button
-                type="button"
-                onClick={() => handleFloorChange("")}
-                className="ml-1 p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors cursor-pointer"
-                title="Clear floor filter"
-                aria-label="Clear floor filter"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        <div className="hidden sm:block order-3 w-0" aria-hidden="true" />
       </div>
 
       {/* --- Render Paginated Content --- */}
