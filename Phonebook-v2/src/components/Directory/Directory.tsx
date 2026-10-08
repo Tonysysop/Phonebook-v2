@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import type { Employee } from "@/types/Employee";
+import { Building, X } from "lucide-react";
 import { SearchBar } from "./SearchBar";
 import { EmployeeCard } from "./EmployeeCard";
 import { EmployeeList } from "./EmployeeList";
@@ -12,6 +13,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+
+// Helper function to format floor label cleanly
+const formatFloorDisplay = (floor: string) => {
+  if (!floor) return "";
+  const trimmed = floor.trim();
+  if (/floor/i.test(trimmed)) {
+    return trimmed;
+  }
+  if (trimmed.toLowerCase() === "ground") {
+    return "Ground Floor";
+  }
+  if (trimmed.toLowerCase() === "basement") {
+    return "Basement";
+  }
+  return `Floor ${trimmed}`;
+};
 
 // --- Configuration Constants -----
 const ITEMS_PER_PAGE_LIST = 10;
@@ -196,12 +213,34 @@ export const Directory: React.FC<DirectoryProps> = ({ employees }) => {
         />
       </div>
 
-      {/* Count Info */}
-      <div className="mb-6">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+      {/* Count Info & Centered Floor Heading */}
+      <div className="mb-6 relative flex flex-col sm:flex-row items-center justify-between gap-3 min-h-[36px]">
+        <p className="text-sm text-gray-600 dark:text-gray-400 order-2 sm:order-1 self-start sm:self-center">
           Showing {paginatedEmployees.length} of {allFilteredEmployees.length}{" "}
           employees (Page {currentPage} of {totalPages})
         </p>
+
+        {selectedFloor && (
+          <div className="order-1 sm:order-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex items-center justify-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 shadow-xs">
+              <Building className="w-5 h-5 text-bua-red shrink-0" />
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-wide">
+                {formatFloorDisplay(selectedFloor)}
+              </h3>
+              <button
+                type="button"
+                onClick={() => handleFloorChange("")}
+                className="ml-1 p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors cursor-pointer"
+                title="Clear floor filter"
+                aria-label="Clear floor filter"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="hidden sm:block order-3 w-0" aria-hidden="true" />
       </div>
 
       {/* --- Render Paginated Content --- */}
